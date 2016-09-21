@@ -4,11 +4,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 /**
  * (c) zoweb
  */
 public class LoginMSG extends JavaPlugin {
+
+    public static String getVersion() {
+        return "1.0";
+    }
 
     @Override
     public void onEnable() {
@@ -27,15 +34,7 @@ public class LoginMSG extends JavaPlugin {
                 getLogger().info("Config file doesn't exist, creating...");
                 file.createNewFile();
                 FileOutputStream fileStream = new FileOutputStream(file, false);
-                fileStream.write(("# Configuration for LoginMSG.\n" +
-                        "# Use %player% for the player name.\n" +
-                        "# Use &[0-F] for colors." +
-                        "\n" +
-                        "# Login message:\n" +
-                        "login-message: '&e&l%player%&e joined the game.'\n" +
-                        "\n" +
-                        "# Logout message:\n" +
-                        "logout-message: '&e&l%player%&e left the game.'\n").getBytes());
+                fileStream.write(Files.readAllBytes(Paths.get("config.yml")));
                 fileStream.close();
             } else {
                 getLogger().info("Loading config...");
