@@ -1,0 +1,34 @@
+# Configuration for LoginMSG.
+# Use %player% for the player name
+# Use &[0-F] for colors.
+
+# If updating, change leave-message to logout-message.
+
+# Login message:
+login-message: '&e&l%player%&e joined the game.'
+
+# Logout message:
+logout-message: '&e&l%player%&e left the game.'
+
+
+# Custom messages.
+# Use the format:
+# my permission:
+#  login-message: 'some %player% logged in'
+#  logout-message: 'some %player% logged out'
+# (where a space in the permission is equal to a ".")
+# If the permission specified is "server op", the message will display when an operator logs in.
+# If the permission specified is "player [playername]", the message will display when [playername] logs in.
+custom-messages:
+  special message login:
+    login-message: '&eTHE AMAZING &l%player%&e LOGGED IN! ROUND OF APPLAUSE'
+    logout-message: '&eAaw... &l%player%&e logged out. You missed your chance to meet them!'
+  server op:
+    login-message: '&eThe moderator, &l%player%&e logged in.'
+    logout-message: '&eThe moderator, &l%player%&e logged out.'
+  player zoweb:
+    login-message: '&eLoginMSG creator, zoweb, logged in!'
+    logout-message: '&eGoodbye, zoweb!'
+
+# Enable MCStats? Pretty please :)
+mc-stats: true

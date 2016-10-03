@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="LoginMSG">
+    <output-path>$PROJECT_DIR$/out/artifacts/LoginMSG</output-path>
+    <root id="archive" name="LoginMSG.jar">
+      <element id="module-output" name="LoginMSG" />
+      <element id="file-copy" path="$PROJECT_DIR$/../spigot-api-1.10-R0.1-SNAPSHOT-latest.jar" />
+    </root>
+  </artifact>
+</component>
