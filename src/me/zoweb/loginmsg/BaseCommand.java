@@ -29,7 +29,8 @@ public class BaseCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6by Zoweb.\n" +
                     " - Reload: &e&l/lmsg r&6\n" +
                     " - Update: &e&l/lmsg u&6\n" +
-                    " - Version: &e&l/lmsg v"));
+                    " - Version: &e&l/lmsg v&6\n" +
+                    " - Toggle: &e&l/lmsg t&6"));
         } else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r")) {
             if (sender.hasPermission("loginmsg.reload")) {
                 try {
@@ -73,13 +74,8 @@ public class BaseCommand implements CommandExecutor {
 
                             Plugin lmsg = getServer().getPluginManager().getPlugin("LoginMSG");
 
-                            InputStream is = null;
-                            OutputStream os = null;
-
-                            try {
-                                File file = new File("plugins/loginmsg_update.jar");
-                                os = new FileOutputStream(file);
-                                is = new URL("http://zoweb.me/products/loginmsg/updater.jar").openStream();
+                            File file = new File("plugins/loginmsg_update.jar");
+                            try (InputStream is = new URL("http://zoweb.me/products/loginmsg/updater.jar").openStream(); OutputStream os = new FileOutputStream(file)) {
                                 int count;
                                 final byte data[] = new byte[1024];
                                 while ((count = is.read(data, 0, 1024)) != -1) {
@@ -94,9 +90,6 @@ public class BaseCommand implements CommandExecutor {
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Files successfully downloaded."));
                             } catch (Exception e) {
                                 e.printStackTrace();
-                            } finally {
-                                is.close();
-                                os.close();
                             }
                         }
                     }
