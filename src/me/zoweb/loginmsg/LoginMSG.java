@@ -22,10 +22,6 @@ public class LoginMSG extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-        LoginMSG.playerEnabled.put("blob", true);
-        getServer().getLogger().log(Level.INFO, LoginMSG.playerEnabled.get("blob").toString());
-
         getServer().getPluginManager().registerEvents(new LoginListener(), this);
         getServer().getPluginCommand("loginmsg").setExecutor(new BaseCommand());
         try {
