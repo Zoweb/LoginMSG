@@ -14,13 +14,23 @@ import java.util.logging.Level;
 
 import static org.bukkit.Bukkit.getServer;
 
-/**
+/*
  * (c) zoweb
  */
+
 public class LoginListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+
+        // PEX support. This unfortunately does not work
+        /*if (getServer().getPluginManager().getPlugin("PermissionsEx") != null) {
+            try {
+                Class.forName("ru.tehkode.permissions.bukkit.PermissionsEx");
+            } catch (Exception er) {
+                er.printStackTrace();
+            }
+        }*/
 
         e.setJoinMessage("");
         String message = "";
@@ -34,19 +44,23 @@ public class LoginListener implements Listener {
             // Get player's permission-specific messages
             boolean doneCustom = false;
             for (String key : section.getKeys(false)) {
-                getServer().getLogger().log(Level.INFO, key);
                 if (e.getPlayer().hasPermission(key.replace(' ', '.')) || (key.equals("server op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player " + e.getPlayer().getName())) {
-                    getServer().getLogger().log(Level.INFO, key.replace(' ', '.') + " is true.");
                     if (section.getConfigurationSection(key).getString("login-message") != null) {
-
-                        getServer().getLogger().log(Level.INFO, "Message = ", section.getConfigurationSection(key).getString("login-message"));
-
                         message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("login-message")).replace("%player%", e.getPlayer().getName());
 
                         doneCustom = true;
                         break;
                     }
-                }
+                }/*
+                PEX support. Not working.
+                else if (key.indexOf("group ") == 0 && getServer().getPluginManager().getPlugin("PermissionsEx") != null && getServer().getPluginManager().getPlugin("PermissionsEx").getClass().getUser(e.getPlayer().getName()).inGroup(key.substring(6))) {
+                    if (section.getConfigurationSection(key).getString("login-message") != null) {
+                        message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("login-message")).replace("%player%", e.getPlayer().getName());
+
+                        doneCustom = true;
+                        break;
+                    }
+                }*/
             }
 
             if (!doneCustom) {
@@ -62,7 +76,6 @@ public class LoginListener implements Listener {
             }
 
             for (Player player : getServer().getOnlinePlayers()) {
-                getServer().getLogger().log(Level.INFO, LoginMSG.playerEnabled.toString());
                 if (LoginMSG.playerEnabled.get(player.getName())) {
                     player.sendMessage(message);
                 }
@@ -82,14 +95,23 @@ public class LoginListener implements Listener {
         // Get player's permission-specific messages
         boolean doneCustom = false;
         for (String key : section.getKeys(false)) {
-            if (e.getPlayer().hasPermission(key) || (key.equals("server.op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player." + e.getPlayer().getName())) {
+            if (e.getPlayer().hasPermission(key.replace(' ', '.')) || (key.equals("server op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player " + e.getPlayer().getName())) {
                 if (section.getConfigurationSection(key).getString("logout-message") != null) {
                     message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("logout-message")).replace("%player%", e.getPlayer().getName());
 
                     doneCustom = true;
                     break;
                 }
-            }
+            }/*
+            PEX support. Not working.
+            else if (key.indexOf("group ") == 0 && getServer().getPluginManager().getPlugin("PermissionsEx") != null && PermissionsEx.getUser(e.getPlayer().getName()).inGroup(key.substring(6))) {
+                if (section.getConfigurationSection(key).getString("logout-message") != null) {
+                    message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("logout-message")).replace("%player%", e.getPlayer().getName());
+
+                    doneCustom = true;
+                    break;
+                }
+            }*/
         }
 
         if (!doneCustom) {
