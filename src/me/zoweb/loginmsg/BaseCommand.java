@@ -6,6 +6,9 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import sun.misc.IOUtils;
@@ -25,6 +28,8 @@ import static org.bukkit.Bukkit.getServer;
 public class BaseCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String str, String[] args) {
+        Plugin lmsg = getServer().getPluginManager().getPlugin("LoginMSG");
+
         if (args.length == 0) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6by Zoweb.\n" +
                     " - Reload: &e&l/lmsg r&6\n" +
@@ -46,11 +51,36 @@ public class BaseCommand implements CommandExecutor {
             }
         } else if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("t")) {
             if (sender.hasPermission("loginmsg.toggle")) {
-                LoginMSG.playerEnabled.put(sender.getName(), !LoginMSG.playerEnabled.get(sender.getName()));
+                /*LoginMSG.playerEnabled.put(sender.getName(), !LoginMSG.playerEnabled.get(sender.getName()));
                 if (LoginMSG.playerEnabled.get(sender.getName())) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Enabled Login Messages"));
                 } else {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Disabled Login Messages"));
+                }*/
+
+
+
+                if (sender instanceof Player) {
+                    try {
+                        Player player = (Player) sender;
+
+                        File configFile = new File(lmsg.getDataFolder(), "player-settings.yml");
+                        YamlConfiguration playerSettings = YamlConfiguration.loadConfiguration(configFile);
+                        String pathName = player.getUniqueId().toString();
+                        ConfigurationSection currentPlayerSettings = playerSettings.getConfigurationSection(pathName);
+                        if (currentPlayerSettings.getBoolean("messages-enabled")) {
+                            currentPlayerSettings.set("messages-enabled", false);
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Disabled Login Messages"));
+                        } else {
+                            currentPlayerSettings.set("messages-enabled", true);
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Enabled Login Messages"));
+                        }
+                        playerSettings.save(configFile);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &cThis command can only be executed by players."));
                 }
             } else {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &cYou do not have" +
@@ -71,8 +101,6 @@ public class BaseCommand implements CommandExecutor {
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6You have the latest version of LoginMSG: &lv" + actualVersion));
                         } else {
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&f&lLoginMSG&7] &6Updating from &lv" + actualVersion + "&6 to &lv" + inputLine + "&6..."));
-
-                            Plugin lmsg = getServer().getPluginManager().getPlugin("LoginMSG");
 
                             File file = new File("plugins/loginmsg_update.jar");
                             try (InputStream is = new URL("http://zoweb.me/products/loginmsg/updater.jar").openStream(); OutputStream os = new FileOutputStream(file)) {
