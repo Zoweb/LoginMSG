@@ -1,6 +1,7 @@
-package me.zoweb.loginmsg;
+/*package me.zoweb.loginmsg;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -9,14 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.net.URL;
-import java.util.logging.Level;
-
 import static org.bukkit.Bukkit.getServer;
 
 /*
  * (c) zoweb
- */
+
 
 public class LoginListener implements Listener {
 
@@ -30,10 +28,11 @@ public class LoginListener implements Listener {
             } catch (Exception er) {
                 er.printStackTrace();
             }
-        }*/
+        }
 
         e.setJoinMessage("");
         String message = "";
+        Sound sound;
 
         try {
             LoginMSG.playerEnabled.put(e.getPlayer().getName(), true);
@@ -42,13 +41,15 @@ public class LoginListener implements Listener {
 
             ConfigurationSection section = config.getConfigurationSection("custom-messages");
             // Get player's permission-specific messages
-            boolean doneCustom = false;
+            boolean usedCustomMessage = false,
+                    usedCustomSound = false;
+            boolean playSounds = config.getConfigurationSection("use-sounds").getBoolean("join");
             for (String key : section.getKeys(false)) {
                 if (e.getPlayer().hasPermission(key.replace(' ', '.')) || (key.equals("server op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player " + e.getPlayer().getName())) {
                     if (section.getConfigurationSection(key).getString("login-message") != null) {
                         message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("login-message")).replace("%player%", e.getPlayer().getName());
 
-                        doneCustom = true;
+                        usedCustomMessage = true;
                         break;
                     }
                 }/*
@@ -60,10 +61,25 @@ public class LoginListener implements Listener {
                         doneCustom = true;
                         break;
                     }
-                }*/
+                }
             }
 
-            if (!doneCustom) {
+            if (playSounds) {
+                ConfigurationSection soundSection = config.getConfigurationSection("custom-sounds");
+                for (String key : soundSection.getKeys(false)) {
+
+                }
+
+                if (!usedCustomSound) {
+                    try {
+                        sound = Sound.valueOf(config.getString("login-sound"));
+                    } catch (Exception er) {
+                        er.printStackTrace();
+                    }
+                }
+            }
+
+            if (!usedCustomMessage) {
                 try {
                     message = ChatColor.translateAlternateColorCodes('&',
                             (config.getString("login-message") == null)
@@ -78,6 +94,7 @@ public class LoginListener implements Listener {
             for (Player player : getServer().getOnlinePlayers()) {
                 if (LoginMSG.playerEnabled.get(player.getName())) {
                     player.sendMessage(message);
+
                 }
             }
         } catch (Exception er) {
@@ -111,7 +128,7 @@ public class LoginListener implements Listener {
                     doneCustom = true;
                     break;
                 }
-            }*/
+            }
         }
 
         if (!doneCustom) {
@@ -134,3 +151,4 @@ public class LoginListener implements Listener {
     }
 
 }
+*/
