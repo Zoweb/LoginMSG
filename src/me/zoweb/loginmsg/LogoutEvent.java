@@ -4,149 +4,127 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
+
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import static org.bukkit.Bukkit.getServer;
 
-/*
- * (c) zoweb
+/**
+ * LoginMSG (c) zachy 2017
  */
-
-public class LoginListener implements Listener {
+public class LogoutEvent implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        event.setQuitMessage("");
 
-        // PEX support. This unfortunately does not work
-        /*if (getServer().getPluginManager().getPlugin("PermissionsEx") != null) {
-            try {
-                Class.forName("ru.tehkode.permissions.bukkit.PermissionsEx");
-            } catch (Exception er) {
-                er.printStackTrace();
-            }
-        }*/
+        // Message to be sent to players with message sending enabled
+        String logoutMessage = "";
 
-        e.setJoinMessage("");
-        String message = "";
-        Sound sound;
+        // Sound to be sent to players with message sending enabled
+        Sound logoutSound = Sound.UI_BUTTON_CLICK;
+
+        // LoginMSG plugin
+        Plugin loginMSG = getServer().getPluginManager().getPlugin("LoginMSG");
+
+        // Player
+        Player player = event.getPlayer();
 
         try {
-            LoginMSG.playerEnabled.put(e.getPlayer().getName(), true);
+            // Get config for LoginMSG to use it when sending a message
+            Configuration configuration = loginMSG.getConfig();
 
-            Configuration config = getServer().getPluginManager().getPlugin("LoginMSG").getConfig();
+            // Get config for player settings
+            File configFile = new File(loginMSG.getDataFolder(), "player-settings.yml");
+            YamlConfiguration playerSettings = YamlConfiguration.loadConfiguration(configFile);
+            String pathName = player.getUniqueId().toString() + ".messages-enabled";
 
-            ConfigurationSection section = config.getConfigurationSection("custom-messages");
-            // Get player's permission-specific messages
-            boolean usedCustomMessage = false,
-                    usedCustomSound = false;
-            boolean playSounds = config.getConfigurationSection("use-sounds").getBoolean("join");
-            for (String key : section.getKeys(false)) {
-                if (e.getPlayer().hasPermission(key.replace(' ', '.')) || (key.equals("server op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player " + e.getPlayer().getName())) {
-                    if (section.getConfigurationSection(key).getString("login-message") != null) {
-                        message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("login-message")).replace("%player%", e.getPlayer().getName());
+            // Custom Messages section
+            ConfigurationSection customMessagesSection = configuration.getConfigurationSection("custom-messages");
+            boolean hasDisplayedCustomMessage = false;
+            for (String key : customMessagesSection.getKeys(false)) {
+                if (MessagerHelpers.checkPlayerPerms(player, key)) {
+                    String currentLogoutMessage = customMessagesSection.getConfigurationSection(key).getString("login-message");
+                    if (currentLogoutMessage != null) {
+                        // Set login message, with custom %player% variable and colours too!
+                        logoutMessage = ChatColor.translateAlternateColorCodes('&', MessagerHelpers.parsePlayerVariable(currentLogoutMessage, player));
 
-                        usedCustomMessage = true;
+                        // Because we used a custom message, we need to set hasDisplayedCustomMessage to true
+                        hasDisplayedCustomMessage = true;
+                        // Exit out of for loop to stop setting more messages.
                         break;
                     }
-                }/*
-                PEX support. Not working.
-                else if (key.indexOf("group ") == 0 && getServer().getPluginManager().getPlugin("PermissionsEx") != null && getServer().getPluginManager().getPlugin("PermissionsEx").getClass().getUser(e.getPlayer().getName()).inGroup(key.substring(6))) {
-                    if (section.getConfigurationSection(key).getString("login-message") != null) {
-                        message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("login-message")).replace("%player%", e.getPlayer().getName());
+                }
+            }
 
-                        doneCustom = true;
-                        break;
+            // Set default message for people who don't meet the conditions for a custom message
+            if (!hasDisplayedCustomMessage) {
+                String currentLoginMessage = configuration.getString("login-message");
+                String preParsedLoginMessage = "";
+                if (currentLoginMessage == null) {
+                    preParsedLoginMessage = "&e&l%player%&e joined the game.";
+                } else {
+                    preParsedLoginMessage = currentLoginMessage;
+                }
+
+                logoutMessage = ChatColor.translateAlternateColorCodes('&', MessagerHelpers.parsePlayerVariable(preParsedLoginMessage, player));
+            }
+
+            // Custom sounds section
+            boolean useSounds = configuration.getBoolean("use-sounds.leave");
+            if (useSounds) {
+                ConfigurationSection customSoundsSection = configuration.getConfigurationSection("custom-sounds");
+                boolean hasDisplayedCustomSound = false;
+                boolean hasPlayedCustomSound = false;
+                for (String key : customSoundsSection.getKeys(false)) {
+                    if (MessagerHelpers.checkPlayerPerms(player, key)) {
+                        String currentLoginSound = customSoundsSection.getConfigurationSection(key).getString("logout-sound");
+                        if (currentLoginSound != null) {
+                            // Set login sound
+                            logoutSound = Sound.valueOf(currentLoginSound);
+
+                            // Because we used a custom sound, we need to set hasDisplayedCustomSound to true
+                            hasDisplayedCustomSound = true;
+                            // Exit out of loop to stop setting more messages
+                            break;
+                        }
                     }
-                }*/
-            }
-
-            if (playSounds) {
-                ConfigurationSection soundSection = config.getConfigurationSection("custom-sounds");
-                for (String key : soundSection.getKeys(false)) {
-
                 }
 
-                if (!usedCustomSound) {
-                    try {
-                        sound = Sound.valueOf(config.getString("login-sound"));
-                    } catch (Exception er) {
-                        er.printStackTrace();
+                // Set default sound for people who don't meet the conditions for a custom sound
+                if (!hasDisplayedCustomSound) {
+                    String currentLoginSoundAsString = configuration.getString("logout-sound");
+                    if (currentLoginSoundAsString == null) {
+                        useSounds = false;
+                    } else {
+                        logoutSound = Sound.valueOf(currentLoginSoundAsString);
                     }
                 }
             }
 
-            if (!usedCustomMessage) {
-                try {
-                    message = ChatColor.translateAlternateColorCodes('&',
-                            (config.getString("login-message") == null)
-                                    ? "&e&l%player%&e joined the game."
-                                    : config.getString("login-message"))
-                            .replace("%player%", e.getPlayer().getName());
-                } catch (Exception er) {
-                    er.printStackTrace();
+            // Display the messages
+            for (Player currentPlayer : getServer().getOnlinePlayers()) {
+
+                if (playerSettings.getBoolean(player.getUniqueId().toString() + ".messages-enabled")) {
+                    currentPlayer.sendMessage(logoutMessage);
+
+                    if (useSounds) {
+                        currentPlayer.playSound(currentPlayer.getLocation(), logoutSound, 1.0F, 1.0F);
+                    }
                 }
+
             }
 
-            for (Player player : getServer().getOnlinePlayers()) {
-                if (LoginMSG.playerEnabled.get(player.getName())) {
-                    player.sendMessage(message);
-
-                }
-            }
-        } catch (Exception er) {
-            er.printStackTrace();
-        }
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        e.setQuitMessage("");
-        String message = "";
-        Configuration config = getServer().getPluginManager().getPlugin("LoginMSG").getConfig();
-
-        ConfigurationSection section = config.getConfigurationSection("custom-messages");
-        // Get player's permission-specific messages
-        boolean doneCustom = false;
-        for (String key : section.getKeys(false)) {
-            if (e.getPlayer().hasPermission(key.replace(' ', '.')) || (key.equals("server op") && e.getPlayer().isOp()) || key.equalsIgnoreCase("player " + e.getPlayer().getName())) {
-                if (section.getConfigurationSection(key).getString("logout-message") != null) {
-                    message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("logout-message")).replace("%player%", e.getPlayer().getName());
-
-                    doneCustom = true;
-                    break;
-                }
-            }/*
-            PEX support. Not working.
-            else if (key.indexOf("group ") == 0 && getServer().getPluginManager().getPlugin("PermissionsEx") != null && PermissionsEx.getUser(e.getPlayer().getName()).inGroup(key.substring(6))) {
-                if (section.getConfigurationSection(key).getString("logout-message") != null) {
-                    message = ChatColor.translateAlternateColorCodes('&', section.getConfigurationSection(key).getString("logout-message")).replace("%player%", e.getPlayer().getName());
-
-                    doneCustom = true;
-                    break;
-                }
-            }*/
-        }
-
-        if (!doneCustom) {
-            try {
-                message = ChatColor.translateAlternateColorCodes('&',
-                        (config.getString("logout-message") == null)
-                                ? "&e&l%player%&e joined the game."
-                                : config.getString("logout-message"))
-                        .replace("%player%", e.getPlayer().getName());
-            } catch (Exception er) {
-                er.printStackTrace();
-            }
-        }
-
-        for (Player player : getServer().getOnlinePlayers()) {
-            if (LoginMSG.playerEnabled.get(player.getName())) {
-                player.sendMessage(message);
-            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
