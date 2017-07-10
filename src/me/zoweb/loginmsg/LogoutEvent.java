@@ -52,7 +52,7 @@ public class LogoutEvent implements Listener {
             boolean hasDisplayedCustomMessage = false;
             for (String key : customMessagesSection.getKeys(false)) {
                 if (MessagerHelpers.checkPlayerPerms(player, key)) {
-                    String currentLogoutMessage = customMessagesSection.getConfigurationSection(key).getString("login-message");
+                    String currentLogoutMessage = customMessagesSection.getConfigurationSection(key).getString("logout-message");
                     if (currentLogoutMessage != null) {
                         // Set login message, with custom %player% variable and colours too!
                         logoutMessage = ChatColor.translateAlternateColorCodes('&', MessagerHelpers.parsePlayerVariable(currentLogoutMessage, player));
@@ -67,7 +67,7 @@ public class LogoutEvent implements Listener {
 
             // Set default message for people who don't meet the conditions for a custom message
             if (!hasDisplayedCustomMessage) {
-                String currentLoginMessage = configuration.getString("login-message");
+                String currentLoginMessage = configuration.getString("logout-message");
                 String preParsedLoginMessage = "";
                 if (currentLoginMessage == null) {
                     preParsedLoginMessage = "&e&l%player%&e joined the game.";
