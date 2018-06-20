@@ -1,12 +1,91 @@
 # Contributing
-When contributing to this repo, please first create an issue on whatever you want to change.
+Want to contribute? Cool, thanks! But please be sure that you follow some rules described below:
 
-Please note that we have a code of conduct, follow it in all interactions with the project.
+- [Reporting Issues](#reporting-issues)
+  - [Be Verbose](#be-verbose)
+  - [Crash reports](#crash-reports)
+  - [Issue attachments](#issue-attachments)
+- [Requesting Features](#requesting-features)
+- [Contributing with Code](#contributing-with-code)
+  - [Use latest branch](#use-latest-branch)
+  - [Branch names](#branch-names)
+  - [Use separate commits](#use-separate-commits)
+  - [Use descriptive commit messages](#use-descriptive-commit-messages)
+  - [Don't use Java 9 features or above](#dont-use-java-9-features-or-above)
+- [Code of Conduct](#code-of-conduct)
+  - [Our Pledge](#our-pledge)
+  - [Our Standards](#our-standards)
+  - [Our Responsibilities](#our-responsibilities)
+  - [Scope](#scope)
+  - [Enforcement](#enforcement)
+  - [Attribution](#attribution)
 
-## Pull Request Process
-1. Update the `README.md` to suit any changes you have made
-2. Increase the version number in `src/plugin.yml`. We use the SemVer versioning scheme.
-3. Create the pull request, and request for approval from someone.
+## Reporting Issues
+Thanks! Without user feedback, the authors can't know about problems. But, if you want to be helpful, you need to supply
+the authors with detailed information about the problem.
+
+### Be Verbose
+- Attach descriptive screenshots demonstrating all the steps you are doing. And it would be better if you highlight the
+  problem in a screenshot.
+- Attach logs. Remember to remove personal information, though. And make sure it isn't too long!
+
+### Crash reports
+LoginMSG will log a "stack trace" when an error occurs. Please include this as an attachment in your issue.
+
+### Issue attachments
+Github only accepts screenshots as direct attachments. Please, don't try to cheat Github by changing file extensions,
+or posting huge log files via comments body.
+
+Zip your files, then upload them to DropBox or Github Gist and post a link in the issue.
+
+## Requesting Features
+- Update LoginMSG first! Don't waste your time requesting a feature that already exists.
+- Sure we haven't already implemented it? Describe your suggestion in details. There are a lot of caricatures about
+  software design. It would be a disappointment if after implementation you realise it was not the feature you were
+  waiting for.
+  
+## Contributing with code
+Before hacking into LoginMSG make sure you are using the latest build.
+
+### Use latest branch
+Please do not try to submit patches for old branches! Patches for versions that were obsolete months ago make no sense.
+
+So, before hacking LoginMSG make sure you're using at least the `master` branch. Then fork from it and make a new branch
+following the rules in the [branch names section](#branch-names).
+
+### Branch names
+We use SmartGit with default settings so you can use that if you want. Just configure Git-Flow as Full.
+
+When creating a branch, make sure you only work on what the branch is for inside it.
+
+- Feature Branch: `feature/[feature name]`
+- Hot-Fix Branch: `hotfix/[hotfix-name]`
+- Support Branch: `support/[support-name]`
+
+### Use separate commits
+Please, use separate commits! Don't do all your changes in one commit, split them up. And commit often - every time you
+change something, commit it.
+
+#### Bad Example
+```
+* add chocolate drip support 🍫
+```
+
+#### Good Examples
+```
+* add chocolate drips 🍫 to login message
+* add chocolate drips 🍫 to death message
+* add chocolate drips to explosions 💥
+```
+
+### Use descriptive commit messages
+Commit messages should be as descriptive as possible, but should never exceed 80 characters long.
+If you can, try and include a relevant emoji in the commit message to spice it up a little. Never use more than one.
+
+Don't submit commits with the same messages. It's quite difficult to review a list of identical commits.
+
+### Don't use Java 9 features or above
+LoginMSG is supposed to run on Java 8, as not many people use newer versions of Java.
 
 ## Code Of Conduct
 ### Our Pledge
