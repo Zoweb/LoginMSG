@@ -1,7 +1,7 @@
 package me.zoweb.loginmsg;
 
+import me.zoweb.loginmsg.command.LoginMSGCommand;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 /**
  * Main class, gets instantiated by Spigot
@@ -33,13 +32,16 @@ public class LoginMSG extends JavaPlugin {
             MessageDisplayer.<PlayerJoinEvent>listen("login", event -> event.setJoinMessage(""));
             // Add a listener for logout
             MessageDisplayer.<PlayerQuitEvent>listen("logout", event -> event.setQuitMessage(""));
-            // Add a listener for death
+            // Add a listener for death. causes error for unknown reason
             //CastedPlayerMessageDisplayer.<PlayerDeathEvent>listenCasted("death", event -> event.setDeathMessage(""));
         } catch (Exception err) {
             getLogger().severe("An error occurred during initalisation:");
             err.printStackTrace();
             return;
         }
+
+        // Listen for commands
+        getCommand("loginmsg").setExecutor(new LoginMSGCommand(this));
 
         try {
             // If the plugin folder doesn't exist, make it
