@@ -1,9 +1,0 @@
-name: LoginMSG
-version: "1.2.1"
-author: zoweb
-main: me.zoweb.loginmsg.LoginMSG
-website: zoweb.me
-commands:
-  loginmsg:
-    description: Main LoginMSG command
-    aliases: [lmsg]
