@@ -1,6 +1,9 @@
 package me.zoweb.loginmsg;
 
 import me.zoweb.loginmsg.command.LoginMSGCommand;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -10,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Map;
 
 /**
  * Main class, gets instantiated by Spigot
@@ -41,7 +45,14 @@ public class LoginMSG extends JavaPlugin {
         }
 
         // Listen for commands
+        getLogger().info("Initialising commands");
         getCommand("loginmsg").setExecutor(new LoginMSGCommand(this));
+
+        // Configuration
+        getLogger().info("Setting up configuration");
+        Configuration defaults = new YamlConfiguration();
+
+        defaults.set("permission.reload", "op");
 
         try {
             // If the plugin folder doesn't exist, make it
@@ -53,6 +64,9 @@ public class LoginMSG extends JavaPlugin {
                 // Create a file for listener if it doesn't already exist
                 File target = new File(dataFolder, listener.name + ".yml");
 
+                // Add permission option
+                defaults.set("permission." + listener.name, "all");
+
                 if (!target.exists()) {
                     getLogger().info("Creating listener config file: " + listener.name);
                     InputStream stream = getResource("template.yml");
@@ -62,6 +76,15 @@ public class LoginMSG extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        defaults.set("cache", "DO NOT OVERRIDE");
+
+        FileConfiguration config = getConfig();
+        defaults.getValues(true).forEach((key, value) -> {
+            getLogger().info("Writing configuration for " + key);
+            if (!config.isSet(key)) config.set(key, value);
+        });
+        saveConfig();
     }
 
     public static void registerEvents(Listener listener) {
