@@ -28,7 +28,7 @@ public class LoginMSGCommand implements CommandExecutor {
 
     private LoginMSG plugin;
 
-    private void help(CommandSender sender) {
+    private boolean help(CommandSender sender) {
         ArrayList<String> options = new ArrayList<>();
 
         boolean isPlayer = sender instanceof Player;
@@ -36,8 +36,36 @@ public class LoginMSGCommand implements CommandExecutor {
         options.add("/lmsg reload");
         options.add("/lmsg <enable|disable> " + (isPlayer ? "[playername]" : "<playername>"));
         options.add("/lmsg <enable|disable> <login|logout|death> " + (isPlayer ? "[playername]" : "<playername>"));
+        options.add("/lmsg query <playername>");
 
         sender.sendMessage(generateHelp("LoginMSG", options.toArray(new String[]{})));
+
+        return true;
+    }
+
+    private boolean checkPermission(CommandSender sender, String permission) {
+        if (permission.equals("op")) return sender.isOp();
+        if (permission.equals("all")) return true;
+        return sender.hasPermission(permission);
+    }
+
+    private String colour(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    private boolean sendNoPermission(CommandSender sender) {
+        sender.sendMessage(noPermissionsMessage);
+        return true;
+    }
+
+    private boolean runReload(CommandSender sender, String[] args) {
+        if (!checkPermission(sender, plugin.getConfig().getString("permission.reload"))) return sendNoPermission(sender);
+
+        sender.sendMessage(colour(prefix + "Reloading LoginMSG..."));
+        plugin.reloadConfig();
+        sender.sendMessage(colour(prefix + "Done"));
+
+        return true;
     }
 
     public LoginMSGCommand(LoginMSG plugin) {
@@ -46,7 +74,15 @@ public class LoginMSGCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) help(sender);
+        if (args.length == 0) return help(sender);
+
+        switch (args[0]) {
+            case "reload": runReload(sender, args); break;
+            case "enable": runEnable(sender, args); break;
+            case "disable": runDisable(sender, args); break;
+            case "query": runQuery(sender, args); break;
+            default: help(sender);
+        }
 
         return true;
     }
