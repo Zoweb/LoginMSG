@@ -1,0 +1,13 @@
+name: LoginMSG
+version: "2.0.0"
+
+author: zoweb
+website: zoweb.me
+
+main: me.zoweb.loginmsg.LoginMSG
+
+commands:
+  loginmsg:
+    description: Control LoginMSG
+    usage: /lmsg
+    aliases: [lmsg, lm, killmsg, kmsg, km]

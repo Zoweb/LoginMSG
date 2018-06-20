@@ -1,0 +1,86 @@
+###########################
+#### LoginMSG by zoweb ####
+###########################
+
+# Usage: (don't bother changing these, they don't do anything)
+# Note: sounds are not explained below. To use a sound, type
+#  a value such as AMBIENT_CAVE from the list at
+#  https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+
+# In messages, you can use "%player%" to reference the player's name. It will
+# get replaced with their name when the message is sent.
+example:
+  # Specifies whether we will use this section. true = yes, false = no
+  enabled: true
+
+  # The checking order. Skipping something here will cancel it. Separate by
+  #  " then ". Valid options are "ops", "usernames", "permissions". You may use
+  #  commas, semicolons or periods (".") to make the grammar better.
+  check first: ops, then usernames, then permissions
+  # An example with punctuation
+  #  check first: usernames. Then, ops; then permissions.
+
+  # The first of the following to match the user will be set as their <event>
+  #  message or sound
+  when matching:
+    ops: This message will only display for operators
+
+    # Check by username. If the username, converted to lower case, matches one
+    #  of these, the first one matched will be set as their <event> message or
+    #  sound. Note, use spaces instead of periods (".")
+    by username:
+      my username: This message will only be displayed for the user "my.username"
+      another_user: This message will only be displayed for the user "another_user"
+
+    # The first of the following permissions that the user has will be set as
+    #  their <event> message or sound. Note, use spaces instead of periods (".")
+    by permission:
+      awesome person permission: This message will be displayed if the person has the permission "awesome.person.permission"
+
+  otherwise:
+    # Exactly the same as above, except that these will display if they do NOT
+    # match. Note, "when matching" always takes preference.
+
+
+
+####################################################################################################
+#### END OF EXAMPLES ######## END OF EXAMPLES ######## END OF EXAMPLES ######## END OF EXAMPLES ####
+####################################################################################################
+
+
+messages:
+  enabled: true
+  check username first: true
+
+  when matching:
+    ops: &aAn operator just <event>!
+    by username:
+      zoweb: &aThe Creator of LMSG (&ozoweb&a) just <event>!
+      notch: &aThe Minecraft creator just <event>!
+    by permission:
+      awesome guy: &aSomeone who is awesome just <event>!
+
+  otherwise:
+    by username:
+      zoweb: &aWelcome, not zoweb!
+    by permission:
+      awesome guy: &7Boo
+
+
+sounds:
+  enabled: true
+  check username first: true
+
+  when matching:
+    ops: ENTITY_GENERIC_EAT
+    by username:
+      notch: ENTITY_CAT_PURREOW
+    by permission:
+      awesome guy: ENTITY_PLAYER_SPLASH
+
+  otherwise:
+    ops: ENTITY_CAT_PURREOW
+    by username:
+      zoweb: ENTITY_GHAST_DEATH
+    by permission:
+      bad guy: ENTITY_FIREWORK_SHOOT
