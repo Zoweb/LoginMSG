@@ -1,0 +1,9 @@
+language: java
+deploy:
+  provider: releases
+  api_key:
+    secure: JRwWHTQv4Y2oQLnaez0gwPipzuEYzbKU83XibeXsw/eq6stQpQum2SCGdb1Nbj6nIg43nZJqUPpy5udk8SbnY2n+2RH97ZyhXe8I50GgKlSrZtMouNxfUmSVSQxIVpxHhYp9+l217vawlFdln3cPMRhG7aS+/S+N/BmEBF5S0nbV/3NSRdPN8utlZ/wl+x/uyLUKYossHjh2pqpDvsugeYf1/737lRKOryvsC/qeqVKM5O7Mu2HhF9rhkQUKZkULzJ0ZWw5lot1sYPjA6iwkH2A3IcWSYA2c7wKKFs20rh4/sZw5P8RRihZrd30Y81kndlKj72mGkM5inmHzIFoG+BO8UUJ2CXQI163Q5JeyliANE1+63nT/AXoIyGiybrw6KAvSGM746iK5nAkSgd3ShTLHOweAbSbjNsJc3uU0Zt4vZxPaqapt3JWL68CHLfw6ZHK29lwldcbvU/WcgMWkl9soZT5WrtWiXAzTDbUi4WMkIt9JnZnQjyhFhu7wO9Gw6Xj37hM1b3r6zqDWEOv6JnOvcOvH17vze0B0zmrYQzPYyx1B98030nMfCj9tqZxyWbb7LZYHmSsaMNDT/R2cuLOziRscKuxi4E43ltoRCBAAeYryqDYRmCCbtDsi9Ss4d2wUrtfRGa6W5Ph9MrpAHO4pd/5GJktKfF0P/l7sqXA=
+  file: target/LoginMSG.jar
+  on:
+    repo: Zoweb/LoginMSG
+    tags: true
