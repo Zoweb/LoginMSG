@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class LoginMSGCommand implements CommandExecutor {
-    public static final String prefix = "&8[&6&LoginMSG&8] &f";
+    public static final String prefix = "&8[&6&lLoginMSG&8] &f";
     public static final String errorPrefix = prefix + "&4&lError! &c";
     public static final String noPermissionsMessage = errorPrefix + "It seems like you aren't allowed to run this " +
             "command. If you think this is wrong, please send the administrators a message!";
