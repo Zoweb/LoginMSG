@@ -35,9 +35,13 @@ public class LoginMSGCommand implements CommandExecutor {
 
         boolean isPlayer = sender instanceof Player;
 
+        StringBuilder listeners = new StringBuilder();
+        for (MessageDisplayer listener : MessageDisplayer.listeners) {
+            listeners.append(listener.name + "|");
+        }
+
         options.add("/lmsg reload");
-        options.add("/lmsg <enable|disable> " + (isPlayer ? "[playername]" : "<playername>"));
-        options.add("/lmsg <enable|disable> <login|logout|death> " + (isPlayer ? "[playername]" : "<playername>"));
+        options.add("/lmsg <enable|disable> <all|" + listeners.substring(0, listeners.length() - 1) + "> " + (isPlayer ? "[playername]" : "<playername>"));
         options.add("/lmsg query <playername>");
 
         sender.sendMessage(generateHelp("LoginMSG", options.toArray(new String[]{})));
@@ -74,19 +78,22 @@ public class LoginMSGCommand implements CommandExecutor {
 
     private void runSet(CommandSender sender, String[] args, boolean value) {
         if (args.length == 1) {
-            runSet(sender, new String[]{"enable", "all"}, value);
+            runSet(sender, new String[]{args[0], "all"}, value);
             return;
         }
         if (args.length == 2) {
-            if (sender instanceof Player) runSet(sender, new String[]{"enable", args[1], sender.getName()}, value);
+            if (sender instanceof Player) runSet(sender, new String[]{args[0], args[1], sender.getName()}, value);
             else sender.sendMessage(colour(errorPrefix + "You must specify a player name."));
             return;
         }
         if (args[1].equals("all")) {
             for (MessageDisplayer listener : MessageDisplayer.listeners) {
-                runSet(sender, new String[]{"enable", listener.name, args[2]}, value);
+                runSet(sender, new String[]{args[0], listener.name, args[2]}, value);
             }
+            return;
         }
+
+        sender.sendMessage(colour(prefix + (value ? "Enabling" : "Disabling") + " " + args[1] + " listeners."));
 
         // Args length is always 3+
         String messageType = args[1];
