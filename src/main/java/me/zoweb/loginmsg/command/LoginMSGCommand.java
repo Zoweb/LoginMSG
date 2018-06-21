@@ -114,6 +114,17 @@ public class LoginMSGCommand implements CommandExecutor {
         plugin.getConfig().set("cache." + targetName + "." + messageType, value);
     }
 
+    private void runSave(CommandSender sender) {
+        if (!checkPermission(sender, plugin.getConfig().getString("permission.save"))) {
+            sender.sendMessage(colour(noPermissionsMessage));
+            return;
+        }
+
+        sender.sendMessage(prefix + "Saving configuration.");
+        plugin.saveConfig();
+        sender.sendMessage(prefix + "Done");
+    }
+
     public LoginMSGCommand(LoginMSG plugin) {
         this.plugin = plugin;
     }
@@ -126,6 +137,7 @@ public class LoginMSGCommand implements CommandExecutor {
             case "reload": runReload(sender, args); break;
             case "enable": runSet(sender, args, true); break;
             case "disable": runSet(sender, args, false); break;
+            case "save": runSave(sender); break;
             // TODO case "query": runQuery(sender, args); break;
             default: help(sender);
         }
