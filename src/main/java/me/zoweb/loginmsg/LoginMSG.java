@@ -53,6 +53,7 @@ public class LoginMSG extends JavaPlugin {
         Configuration defaults = new YamlConfiguration();
 
         defaults.set("permission.reload", "op");
+        defaults.set("permission.save", "op");
 
         try {
             // If the plugin folder doesn't exist, make it
