@@ -65,7 +65,8 @@ public class LoginMSG extends JavaPlugin {
                 File target = new File(dataFolder, listener.name + ".yml");
 
                 // Add permission option
-                defaults.set("permission." + listener.name, "all");
+                defaults.set("permission." + listener.name + ".me", "all");
+                defaults.set("permission." + listener.name + ".others", "op");
 
                 if (!target.exists()) {
                     getLogger().info("Creating listener config file: " + listener.name);
