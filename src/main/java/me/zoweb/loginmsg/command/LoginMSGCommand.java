@@ -1,10 +1,12 @@
 package me.zoweb.loginmsg.command;
 
 import me.zoweb.loginmsg.LoginMSG;
+import me.zoweb.loginmsg.MessageDisplayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class LoginMSGCommand implements CommandExecutor {
     }
 
     private boolean checkPermission(CommandSender sender, String permission) {
+        if (permission == null) return false;
+        if (permission.equals("console")) return sender instanceof ConsoleCommandSender;
         if (permission.equals("op")) return sender.isOp();
         if (permission.equals("all")) return true;
         return sender.hasPermission(permission);
@@ -66,7 +70,41 @@ public class LoginMSGCommand implements CommandExecutor {
         sender.sendMessage(colour(prefix + "Reloading LoginMSG..."));
         plugin.reloadConfig();
         sender.sendMessage(colour(prefix + "Done"));
+    }
 
+    private void runSet(CommandSender sender, String[] args, boolean value) {
+        if (args.length == 1) {
+            runSet(sender, new String[]{"enable", "all"}, value);
+            return;
+        }
+        if (args.length == 2) {
+            if (sender instanceof Player) runSet(sender, new String[]{"enable", args[1], sender.getName()}, value);
+            else sender.sendMessage(colour(errorPrefix + "You must specify a player name."));
+            return;
+        }
+        if (args[1].equals("all")) {
+            for (MessageDisplayer listener : MessageDisplayer.listeners) {
+                runSet(sender, new String[]{"enable", listener.name, args[2]}, value);
+            }
+        }
+
+        // Args length is always 3+
+        String messageType = args[1];
+        String targetName = args[2];
+
+        if (!targetName.equals(sender.getName()) &&
+                !checkPermission(sender, plugin.getConfig().getString("permission." + messageType + ".others"))) {
+            sender.sendMessage(colour(noPermissionsMessage));
+            return;
+        }
+
+        if (targetName.equals(sender.getName()) &&
+                !checkPermission(sender, plugin.getConfig().getString("permission." + messageType + ".me"))) {
+            sender.sendMessage(colour(noPermissionsMessage));
+            return;
+        }
+
+        plugin.getConfig().set("cache." + targetName + "." + messageType, value);
     }
 
     public LoginMSGCommand(LoginMSG plugin) {
@@ -79,9 +117,9 @@ public class LoginMSGCommand implements CommandExecutor {
 
         switch (args[0]) {
             case "reload": runReload(sender, args); break;
-            case "enable": runEnable(sender, args); break;
-            case "disable": runDisable(sender, args); break;
-            case "query": runQuery(sender, args); break;
+            case "enable": runSet(sender, args, true); break;
+            case "disable": runSet(sender, args, false); break;
+            // TODO case "query": runQuery(sender, args); break;
             default: help(sender);
         }
 
