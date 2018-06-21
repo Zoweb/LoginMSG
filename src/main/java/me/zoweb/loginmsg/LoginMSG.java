@@ -78,7 +78,7 @@ public class LoginMSG extends JavaPlugin {
             e.printStackTrace();
         }
 
-        defaults.set("cache", "DO NOT OVERRIDE");
+        defaults.set("note", "Do not edit CACHE unless you know what you're doing!");
 
         FileConfiguration config = getConfig();
         defaults.getValues(true).forEach((key, value) -> {
