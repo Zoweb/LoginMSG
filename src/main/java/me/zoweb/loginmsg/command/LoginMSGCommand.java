@@ -41,8 +41,7 @@ public class LoginMSGCommand implements CommandExecutor {
         }
 
         options.add("/lmsg reload");
-        options.add("/lmsg <enable|disable> <all|" + listeners.substring(0, listeners.length() - 1) + "> " + (isPlayer ? "[playername]" : "<playername>"));
-        options.add("/lmsg query <playername>");
+        options.add("/lmsg <enable|disable|query> <all|" + listeners.substring(0, listeners.length() - 1) + "> " + (isPlayer ? "[playername]" : "<playername>"));
 
         sender.sendMessage(generateHelp("LoginMSG", options.toArray(new String[]{})));
 
@@ -125,6 +124,42 @@ public class LoginMSGCommand implements CommandExecutor {
         sender.sendMessage(prefix + "Done");
     }
 
+    private void runQuery(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            runQuery(sender, new String[]{args[0], "all"});
+            return;
+        }
+        if (args.length == 2) {
+            if (sender instanceof Player) runQuery(sender, new String[]{args[0], args[1], sender.getName()});
+            else sender.sendMessage(colour(errorPrefix + "You must specify a player name."));
+            return;
+        }
+        if (args[1].equals("all")) {
+            for (MessageDisplayer listener : MessageDisplayer.listeners) {
+                runQuery(sender, new String[]{args[0], listener.name, args[2]});
+            }
+            return;
+        }
+
+        String messageType = args[1];
+        String targetName = args[2];
+
+        if (!targetName.equals(sender.getName()) &&
+                !checkPermission(sender, plugin.getConfig().getString("permission." + messageType + ".query.others"))) {
+            sender.sendMessage(colour(noPermissionsMessage));
+            return;
+        }
+
+        if (targetName.equals(sender.getName()) &&
+                !checkPermission(sender, plugin.getConfig().getString("permission." + messageType + ".query.me"))) {
+            sender.sendMessage(colour(noPermissionsMessage));
+            return;
+        }
+
+        sender.sendMessage(colour(prefix + messageType.substring(0, 1).toUpperCase() + messageType.substring(1) + " is " +
+                (plugin.getConfig().getBoolean("cache." + targetName + "." + messageType) ? "enabled." : "disabled.")));
+    }
+
     public LoginMSGCommand(LoginMSG plugin) {
         this.plugin = plugin;
     }
@@ -138,7 +173,7 @@ public class LoginMSGCommand implements CommandExecutor {
             case "enable": runSet(sender, args, true); break;
             case "disable": runSet(sender, args, false); break;
             case "save": runSave(sender); break;
-            // TODO case "query": runQuery(sender, args); break;
+            case "query": runQuery(sender, args); break;
             default: help(sender);
         }
 

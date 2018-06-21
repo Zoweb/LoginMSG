@@ -68,6 +68,8 @@ public class LoginMSG extends JavaPlugin {
                 // Add permission option
                 defaults.set("permission." + listener.name + ".me", "all");
                 defaults.set("permission." + listener.name + ".others", "op");
+                defaults.set("permission." + listener.name + ".query.me", "all");
+                defaults.set("permission." + listener.name + ".query.others", "op");
 
                 if (!target.exists()) {
                     getLogger().info("Creating listener config file: " + listener.name);
@@ -83,7 +85,6 @@ public class LoginMSG extends JavaPlugin {
 
         FileConfiguration config = getConfig();
         defaults.getValues(true).forEach((key, value) -> {
-            getLogger().info("Writing configuration for " + key);
             if (!config.isSet(key)) config.set(key, value);
         });
         saveConfig();
