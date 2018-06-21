@@ -91,6 +91,7 @@ public class MessageDisplayer<TEvent extends PlayerEvent> implements Listener {
     protected MessageDisplayer(String name, Lambda<TEvent> valueResetter) {
         this.name = name;
         this.valueResetter = valueResetter;
+        data = new YamlConfiguration();
 
         listeners.add(this);
     }
