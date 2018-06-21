@@ -48,7 +48,7 @@ public class LoginMSGCommand implements CommandExecutor {
     private boolean checkPermission(CommandSender sender, String permission) {
         if (permission == null) return false;
         if (permission.equals("console")) return sender instanceof ConsoleCommandSender;
-        if (permission.equals("op")) return sender.isOp();
+        if (permission.equals("op")) return sender.isOp() || sender instanceof ConsoleCommandSender;
         if (permission.equals("all")) return true;
         return sender.hasPermission(permission);
     }
