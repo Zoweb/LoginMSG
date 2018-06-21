@@ -19,7 +19,7 @@ import java.util.List;
  *                logging in, use <code>PlayerJoinEvent</code>
  */
 public class MessageDisplayer<TEvent extends PlayerEvent> implements Listener {
-    static List<MessageDisplayer> listeners = new ArrayList<>();
+    public static List<MessageDisplayer> listeners = new ArrayList<>();
 
     /**
      * Listen for an event specified by <code>TEvent</code>
