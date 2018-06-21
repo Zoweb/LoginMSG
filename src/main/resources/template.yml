@@ -14,7 +14,7 @@ example:
   enabled: true
 
   # The default value if nothing else matches. Comment out (using hashes) to
-  # not use.
+  #  not use.
   default: 'This message will display if nothing else matches.'
 
   # The checking order. Skipping something here will cancel it. Separate by
