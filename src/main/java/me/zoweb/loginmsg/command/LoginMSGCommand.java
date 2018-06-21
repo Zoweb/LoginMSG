@@ -53,19 +53,20 @@ public class LoginMSGCommand implements CommandExecutor {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    private boolean sendNoPermission(CommandSender sender) {
+    private void sendNoPermission(CommandSender sender) {
         sender.sendMessage(noPermissionsMessage);
-        return true;
     }
 
-    private boolean runReload(CommandSender sender, String[] args) {
-        if (!checkPermission(sender, plugin.getConfig().getString("permission.reload"))) return sendNoPermission(sender);
+    private void runReload(CommandSender sender, String[] args) {
+        if (!checkPermission(sender, plugin.getConfig().getString("permission.reload"))) {
+            sendNoPermission(sender);
+            return;
+        }
 
         sender.sendMessage(colour(prefix + "Reloading LoginMSG..."));
         plugin.reloadConfig();
         sender.sendMessage(colour(prefix + "Done"));
 
-        return true;
     }
 
     public LoginMSGCommand(LoginMSG plugin) {
