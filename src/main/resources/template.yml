@@ -13,6 +13,10 @@ example:
   # Specifies whether we will use this section. true = yes, false = no
   enabled: true
 
+  # The default value if nothing else matches. Comment out (using hashes) to
+  # not use.
+  default: This message will display if nothing else matches.
+
   # The checking order. Skipping something here will cancel it. Separate by
   #  " then ". Valid options are "ops", "usernames", "permissions". You may use
   #  commas, semicolons or periods (".") to make the grammar better.
@@ -50,7 +54,8 @@ example:
 
 messages:
   enabled: true
-  check username first: true
+  default: Welcome, %player%!
+  check first: ops, then usernames, then permissions
 
   when matching:
     ops: &aAn operator just <event>!
@@ -69,7 +74,8 @@ messages:
 
 sounds:
   enabled: true
-  check username first: true
+  #default: null
+  check first: ops, then usernames, then permissions
 
   when matching:
     ops: ENTITY_GENERIC_EAT
