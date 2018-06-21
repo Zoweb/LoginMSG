@@ -15,31 +15,31 @@ example:
 
   # The default value if nothing else matches. Comment out (using hashes) to
   # not use.
-  default: This message will display if nothing else matches.
+  default: 'This message will display if nothing else matches.'
 
   # The checking order. Skipping something here will cancel it. Separate by
   #  " then ". Valid options are "ops", "usernames", "permissions". You may use
   #  commas, semicolons or periods (".") to make the grammar better.
-  check first: ops, then usernames, then permissions
+  check first: 'ops, then usernames, then permissions'
   # An example with punctuation
   #  check first: usernames. Then, ops; then permissions.
 
   # The first of the following to match the user will be set as their <event>
   #  message or sound
   when matching:
-    ops: This message will only display for operators
+    ops: 'This message will only display for operators'
 
     # Check by username. If the username, converted to lower case, matches one
     #  of these, the first one matched will be set as their <event> message or
     #  sound. Note, use spaces instead of periods (".")
     by username:
-      my username: This message will only be displayed for the user "my.username"
-      another_user: This message will only be displayed for the user "another_user"
+      my username: 'This message will only be displayed for the user "my.username"'
+      another_user: 'This message will only be displayed for the user "another_user"'
 
     # The first of the following permissions that the user has will be set as
     #  their <event> message or sound. Note, use spaces instead of periods (".")
     by permission:
-      awesome person permission: This message will be displayed if the person has the permission "awesome.person.permission"
+      awesome person permission: 'This message will be displayed if the person has the permission "awesome.person.permission"'
 
   otherwise:
     # Exactly the same as above, except that these will display if they do NOT
@@ -54,28 +54,28 @@ example:
 
 messages:
   enabled: true
-  default: Welcome, %player%!
-  check first: ops, then usernames, then permissions
+  default: 'Welcome, %player%!'
+  check first: 'ops, then usernames, then permissions'
 
   when matching:
-    ops: &aAn operator just <event>!
+    ops: '&aAn operator just <event>!'
     by username:
-      zoweb: &aThe Creator of LMSG (&ozoweb&a) just <event>!
-      notch: &aThe Minecraft creator just <event>!
+      zoweb: '&aThe Creator of LMSG (&ozoweb&a) just <event>!'
+      notch: '&aThe Minecraft creator just <event>!'
     by permission:
-      awesome guy: &aSomeone who is awesome just <event>!
+      awesome guy: '&aSomeone who is awesome just <event>!'
 
   otherwise:
     by username:
-      zoweb: &aWelcome, not zoweb!
+      zoweb: '&aWelcome, not zoweb!'
     by permission:
-      awesome guy: &7Boo
+      awesome guy: '&7Boo'
 
 
 sounds:
   enabled: true
   #default: null
-  check first: ops, then usernames, then permissions
+  check first: 'ops, then usernames, then permissions'
 
   when matching:
     ops: ENTITY_GENERIC_EAT
