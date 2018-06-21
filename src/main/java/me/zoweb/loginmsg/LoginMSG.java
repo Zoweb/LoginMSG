@@ -88,6 +88,12 @@ public class LoginMSG extends JavaPlugin {
         saveConfig();
     }
 
+    @Override
+    public void onDisable() {
+        getLogger().info("Saving changes");
+        saveConfig();
+    }
+
     public static void registerEvents(Listener listener) {
         instance.getServer().getPluginManager().registerEvents(listener, instance);
     }
