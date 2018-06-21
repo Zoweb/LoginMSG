@@ -2,6 +2,7 @@ package me.zoweb.loginmsg;
 
 import me.zoweb.loginmsg.command.LoginMSGCommand;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -76,8 +77,10 @@ public class LoginMSG extends JavaPlugin {
                     InputStream stream = getResource("template.yml");
                     Files.copy(stream, target.toPath());
                 }
+
+                listener.loadData(target);
             }
-        } catch (IOException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
 
