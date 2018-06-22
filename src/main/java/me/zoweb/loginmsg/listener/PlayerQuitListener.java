@@ -8,6 +8,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.function.Consumer;
 
+/**
+ * Event handler for when a player quits the server
+ */
 public class PlayerQuitListener extends MessageDisplayer<PlayerQuitEvent> implements Listener {
     public PlayerQuitListener(String name, Consumer<PlayerQuitEvent> valueResetter) {
         super(name, valueResetter);

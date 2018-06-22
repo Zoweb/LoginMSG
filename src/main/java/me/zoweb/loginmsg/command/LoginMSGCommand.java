@@ -11,12 +11,32 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+/**
+ * LoginMSG command executor
+ */
 public class LoginMSGCommand implements CommandExecutor {
+    /**
+     * LoginMSG prefix
+     */
     public static final String prefix = "&8[&6&lLoginMSG&8] &f";
+
+    /**
+     * Error prefix
+     */
     public static final String errorPrefix = prefix + "&4&lError! &c";
+
+    /**
+     * Message to display when user doesn't have permission to do something
+     */
     public static final String noPermissionsMessage = errorPrefix + "It seems like you aren't allowed to run this " +
             "command. If you think this is wrong, please send the administrators a message!";
 
+    /**
+     * Generate a help message for a command
+     * @param name The name of the command
+     * @param options The different options the command has
+     * @return Help message - must use colour(message) to generate colour codes
+     */
     public static String generateHelp(String name, String[] options) {
         StringBuilder message = new StringBuilder(prefix);
         message.append("&o").append(name).append("&f command\n");

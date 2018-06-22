@@ -28,6 +28,11 @@ public class PlayerEntityEvent<TEvent extends EntityEvent> extends PlayerEvent {
     private TEvent event;
     private HandlerList handlers = new HandlerList();
 
+    /**
+     * Create a new PlayerEntityEvent from an EntityEvent
+     * @param convertable EntityEvent to convert to a PlayerEntityEvent
+     * @throws InitializationError Invalid entity event
+     */
     public PlayerEntityEvent(TEvent convertable) throws InitializationError {
         super(null);
 
@@ -40,11 +45,19 @@ public class PlayerEntityEvent<TEvent extends EntityEvent> extends PlayerEvent {
         player = (Player) convertable.getEntity();
     }
 
+    /**
+     * Gets event handlers list
+     * @return HandlerList from inner PlayerEvent
+     */
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    /**
+     * Get the original `EntityEvent`
+     * @return Original `EntityEvent`
+     */
     public TEvent getEvent() {
         return event;
     }

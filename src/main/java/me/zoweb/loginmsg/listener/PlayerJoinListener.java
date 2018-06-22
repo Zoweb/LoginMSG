@@ -7,6 +7,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.function.Consumer;
 
+/**
+ * Event handler for when a player joins the server
+ */
 public class PlayerJoinListener extends MessageDisplayer<PlayerJoinEvent> implements Listener {
     public PlayerJoinListener(String name, Consumer<PlayerJoinEvent> valueResetter) {
         super(name, valueResetter);
