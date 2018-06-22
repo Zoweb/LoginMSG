@@ -13,10 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Scanner;
@@ -32,6 +29,8 @@ public class LoginMSG extends JavaPlugin {
         super();
         instance = this;
     }
+
+    private Configuration configDefaults = new YamlConfiguration();
 
     @Override
     public void onEnable() {
@@ -56,10 +55,9 @@ public class LoginMSG extends JavaPlugin {
 
         // Configuration
         getLogger().info("Setting up configuration");
-        Configuration defaults = new YamlConfiguration();
 
-        defaults.set("permission.reload", "op");
-        defaults.set("permission.save", "op");
+        configDefaults.set("permission.reload", "op");
+        configDefaults.set("permission.save", "op");
 
         try {
             // If the plugin folder doesn't exist, make it
@@ -68,26 +66,7 @@ public class LoginMSG extends JavaPlugin {
 
             // Loop through listeners and load their data
             for (MessageDisplayer listener : MessageDisplayer.listeners) {
-                // Create a file for listener if it doesn't already exist
-                File target = new File(dataFolder, listener.name + ".yml");
-
-                // Add permission option
-                defaults.set("permission." + listener.name + ".me", "all");
-                defaults.set("permission." + listener.name + ".others", "op");
-                defaults.set("permission." + listener.name + ".query.me", "all");
-                defaults.set("permission." + listener.name + ".query.others", "op");
-
-                if (!target.exists()) {
-                    getLogger().info("Creating listener config file: " + listener.name);
-                    InputStream stream = getResource("template.yml");
-                    Scanner scanner = new Scanner(stream).useDelimiter("\\A");
-                    PrintWriter writer = new PrintWriter(target);
-                    String contents = scanner.hasNext() ? scanner.next() : "";
-                    contents = contents.replace("<event>", listener.name);
-                    writer.write(contents);
-                    writer.close();
-                    scanner.close();
-                }
+                File target = writeListenerConfig(listener);
 
                 getLogger().info("Loading configuration for above file: " + target.getPath() + ".");
                 listener.loadData(target);
@@ -96,13 +75,40 @@ public class LoginMSG extends JavaPlugin {
             e.printStackTrace();
         }
 
-        defaults.set("note", "Do not edit CACHE unless you know what you're doing!");
+        configDefaults.set("note", "Do not edit CACHE unless you know what you're doing!");
 
+        writeConfigDefaults();
+    }
+
+    public void writeConfigDefaults() {
         FileConfiguration config = getConfig();
-        defaults.getValues(true).forEach((key, value) -> {
+        configDefaults.getValues(true).forEach((key, value) -> {
             if (!config.isSet(key)) config.set(key, value);
         });
         saveConfig();
+    }
+
+    public File writeListenerConfig(MessageDisplayer listener) throws FileNotFoundException {
+        configDefaults.set("permission." + listener.name + ".me", "all");
+        configDefaults.set("permission." + listener.name + ".others", "op");
+        configDefaults.set("permission." + listener.name + ".query.me", "all");
+        configDefaults.set("permission." + listener.name + ".query.others", "op");
+
+        File target = new File(getDataFolder(), listener.name + ".yml");
+
+        if (!target.exists()) {
+            getLogger().info("Creating listener config file: " + listener.name);
+            InputStream stream = getResource("template.yml");
+            Scanner scanner = new Scanner(stream).useDelimiter("\\A");
+            PrintWriter writer = new PrintWriter(target);
+            String contents = scanner.hasNext() ? scanner.next() : "";
+            contents = contents.replace("<event>", listener.name);
+            writer.write(contents);
+            writer.close();
+            scanner.close();
+        }
+
+        return target;
     }
 
     @Override
