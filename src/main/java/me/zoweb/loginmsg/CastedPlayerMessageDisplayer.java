@@ -1,6 +1,5 @@
 package me.zoweb.loginmsg;
 
-import me.zoweb.loginmsg.lambda.Lambda;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityEvent;
 import org.junit.runners.model.InitializationError;
