@@ -80,6 +80,9 @@ public class LoginMSG extends JavaPlugin {
         writeConfigDefaults();
     }
 
+    /**
+     * Write settings to configuration file (config.yml), adding defaults if the value is not set.
+     */
     public void writeConfigDefaults() {
         FileConfiguration config = getConfig();
         configDefaults.getValues(true).forEach((key, value) -> {
@@ -88,6 +91,12 @@ public class LoginMSG extends JavaPlugin {
         saveConfig();
     }
 
+    /**
+     * Adds defaults for permissions and creates listener configuration file from template
+     * @param listener The listener to base settings off of
+     * @return Path that listener configuration file was saved to
+     * @throws FileNotFoundException Should never happen. From writing to file
+     */
     public File writeListenerConfig(MessageDisplayer listener) throws FileNotFoundException {
         configDefaults.set("permission." + listener.name + ".me", "all");
         configDefaults.set("permission." + listener.name + ".others", "op");
@@ -117,6 +126,10 @@ public class LoginMSG extends JavaPlugin {
         saveConfig();
     }
 
+    /**
+     * Registers an event with Spigot using LoginMSG as the plugin
+     * @param listener Event listener instance
+     */
     public static void registerEvents(Listener listener) {
         instance.getServer().getPluginManager().registerEvents(listener, instance);
     }

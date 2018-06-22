@@ -10,6 +10,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.function.Consumer;
 
+/**
+ * Event handler for when a player dies
+ */
 public class PlayerDeathListener extends CastedPlayerMessageDisplayer<PlayerDeathEvent> implements Listener {
     public PlayerDeathListener(String name, Consumer<PlayerDeathEvent> valueResetter) {
         super(name, valueResetter);

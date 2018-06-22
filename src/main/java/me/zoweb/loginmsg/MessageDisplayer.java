@@ -26,11 +26,22 @@ import java.util.function.Consumer;
  *                logging in, use <code>PlayerJoinEvent</code>
  */
 public abstract class MessageDisplayer<TEvent extends PlayerEvent> {
+    /**
+     * List of every MessageDisplayer
+     */
     public static List<MessageDisplayer> listeners = new ArrayList<>();
 
     private YamlConfiguration data;
-    protected Consumer<TEvent> valueResetter;
     private Class<TEvent> clazz;
+
+    /**
+     * Consumer to reset the value of this listener
+     */
+    protected Consumer<TEvent> valueResetter;
+
+    /**
+     * Name of this listener
+     */
     public String name;
 
     private String getValue(Player player, String section) {
@@ -68,6 +79,11 @@ public abstract class MessageDisplayer<TEvent extends PlayerEvent> {
         return null;
     }
 
+    /**
+     * Creates a MessageDisplayer instance
+     * @param name The name of the message displayer
+     * @param valueResetter The consumer to run to reset the message value
+     */
     protected MessageDisplayer(String name, Consumer<TEvent> valueResetter) {
         this.name = name;
         this.valueResetter = valueResetter;
@@ -76,10 +92,20 @@ public abstract class MessageDisplayer<TEvent extends PlayerEvent> {
         listeners.add(this);
     }
 
+    /**
+     * Loads data from the configuration file specified
+     * @param location The location of the configuration file
+     * @throws IOException File could not be found
+     * @throws InvalidConfigurationException File has invalid markup
+     */
     public void loadData(File location) throws IOException, InvalidConfigurationException {
         data.load(location);
     }
 
+    /**
+     * Runs message and sounds and sends to all players
+     * @param event Event instance to use
+     */
     protected void run(TEvent event) {
         valueResetter.accept(event);
 
@@ -108,5 +134,9 @@ public abstract class MessageDisplayer<TEvent extends PlayerEvent> {
         }
     }
 
+    /**
+     * Override to signal to Spigot what event to listen to.
+     * @param event The event data. !! MUST NOT BE GENERIC !!
+     */
     public abstract void onEvent(TEvent event);
 }
